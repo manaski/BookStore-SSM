@@ -3,14 +3,9 @@ package com.gangbin.store.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * é€šç”¨çš„è¿”å›çš„ç±?
- * 
- * @author lfy
- * 
- */
+
 public class Message {
-	//×´Ì¬Âë£¬ 100 ³É¹¦       200 Ê§°Ü
+	 
 	private int code;
 
 	private String msg;
@@ -21,14 +16,14 @@ public class Message {
 	public static Message success(){
 		Message result = new Message();
 		result.setCode(100);
-		result.setMsg("³É¹¦");
+		result.setMsg("æˆåŠŸ");
 		return result;
 	}
 	
 	public static Message fail(){
 		Message result = new Message();
 		result.setCode(200);
-		result.setMsg("Ê§°Ü");
+		result.setMsg("å¤±è´¥");
 		return result;
 	}
 	

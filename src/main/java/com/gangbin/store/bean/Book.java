@@ -2,6 +2,10 @@ package com.gangbin.store.bean;
 
 import java.sql.Date;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Book {
@@ -9,15 +13,20 @@ public class Book {
 
     private String author;
 
+    @Pattern(regexp = "(^[a-zA-Z_-]{1,32}$)|(^[\u2E80-\u9FFF]{1,16})") 
     private String title;
 
+    @DecimalMin("0.0")
     private Float price;
 
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @Past
     private Date publishingDate;
 
+    @DecimalMin("0")
     private Integer salesAmount;
 
+    @DecimalMin("0")
     private Integer storeNumber;
 
     public Integer getBookId() {
