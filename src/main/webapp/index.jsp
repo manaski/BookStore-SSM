@@ -151,16 +151,10 @@
 		<!-- 标题 -->
 		<div class="row">
 			<div class="col-md-12">
-				<h1>后台管理界面</h1>
+				<h1>欢迎来到书城</h1>
 			</div>
 		</div>
-		<!-- 按钮 -->
-		<div class="row">
-			<div class="col-md-4 col-md-offset-8">
-				<button class="btn btn-primary" id="book_add_modal_btn">新增</button>
-				<button class="btn btn-danger" id="book_delete_all_btn">删除</button>
-			</div>
-		</div>
+	
 		<!-- 显示表格数据 -->
 		<div class="row">
 			<div class="col-md-12">
@@ -231,15 +225,15 @@
 			var priceTd = $("<td></td>").append(item.price);
 			var publicationTd = $("<td></td>").append(item.publishingDate);
 		
-			var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
-							.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
+			var checkBtn = $("<button></button>").addClass("btn btn-primary btn-sm check_btn")
+							.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("查看详情");
 			//为编辑按钮添加一个自定义的属性，来表示当前员工id
-			editBtn.attr("edit-id",item.bookId);
-			var delBtn =  $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
-							.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
+			checkBtn.attr("check-id",item.bookId);
+			var buyBtn =  $("<button></button>").addClass("btn btn-danger btn-sm buy_btn")
+							.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("添加购物车");
 			//为删除按钮添加一个自定义的属性来表示当前删除的员工id
-			delBtn.attr("del-id",item.bookId);
-			var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
+			buyBtn.attr("buy-id",item.bookId);
+			var btnTd = $("<td></td>").append(checkBtn).append(" ").append(buyBtn);
 			//var delBtn = 
 			//append方法执行完成以后还是返回原来的元素
 			$("<tr></tr>").append(checkBoxTd)
@@ -464,13 +458,13 @@
 	//1、按钮创建之前就绑定了click，所以绑定不上。
 	//1）、可以在创建按钮的时候绑定。    2）、绑定点击.live()
 	//jquery新版没有live，使用on进行替代
-	$(document).on("click",".edit_btn",function(){
+	$(document).on("click",".check_btn",function(){
 		//alert("edit"+$(this).attr("edit-id"));
 		//查出书籍信息
-		getBook($(this).attr("edit-id"));
+		getBook($(this).attr("check-id"));
 		
 		//3、把id传递给模态框的更新按钮
-		$("#book_update_btn").attr("edit-id",$(this).attr("edit-id"));
+		$("#book_update_btn").attr("check-id",$(this).attr("check-id"));
 		$("#bookUpdateModal").modal({
 			backdrop:"static"
 		});
@@ -478,7 +472,7 @@
 	
 	function getBook(id){
 		$.ajax({
-			url:"${APP_PATH}/bookToEdit/"+id,
+			url:"${APP_PATH}/bookTocheck/"+id,
 			type:"GET",
 			success:function(result){
 				//alert(result);
@@ -514,7 +508,7 @@
 		}
 		//2、发送ajax请求保存更新
 		$.ajax({
-			url:"${APP_PATH}/updateBook/"+$(this).attr("edit-id"),
+			url:"${APP_PATH}/updateBook/"+$(this).attr("check-id"),
 			//可以下面这样直接写，也可以直接用PUT方法
 			//type:"POST",
 			//data:$("#bookUpdateModal form").serialize()+"&_method=PUT",
@@ -557,16 +551,16 @@
 	});
 	
 	//单个删除
-	$(document).on("click",".delete_btn",function(){
+	$(document).on("click",".buy_btn",function(){
 		//1、弹出是否确认删除对话框
 		var title = $(this).parents("tr").find("td:eq(2)").text();
-		var bookId = $(this).attr("del-id");
+		var bookId = $(this).attr("buy-id");
 		//alert($(this).parents("tr").find("td:eq(1)").text());
-		if(confirm("确认删除【"+title+"】吗？")){
-			//确认，发送ajax请求删除即可
+		if(confirm("确认购买【"+title+"】吗？")){
+			//确认，发送ajax请求
 			$.ajax({
-				url:"${APP_PATH}/book/"+bookId,
-				type:"DELETE",
+				url:"${APP_PATH}/cart/"+bookId,
+				type:"POST",
 				success:function(result){
 					alert(result.msg);
 					//回到本页
@@ -591,7 +585,6 @@
 	});
 	//点击全部删除，就批量删除
 	$("#book_delete_all_btn").click(function(){
-		
 		var titles = "";
 		var del_idstr = "";
 		$.each($(".check_item:checked"),function(){
